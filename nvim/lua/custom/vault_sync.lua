@@ -3,7 +3,7 @@ local M = {}
 local uv = vim.uv or vim.loop
 
 local defaults = {
-  vault = '~/vault/second-brain',
+  vault = require('custom.settings').vault.path,
   debounce_ms = 60 * 1000,
   sync_on_enter = true,
   notify_auto_success = false,
@@ -51,7 +51,7 @@ local function canonical_path(path)
 end
 
 local function is_vault_path(path)
-  local normalized = normalize_path(path)
+  local normalized = canonical_path(path)
 
   if not normalized then
     return false
@@ -199,7 +199,7 @@ local function finish_sync(success, manual, message)
   if success then
     state.auto_suspended = false
 
-    -- Reload clean buffers changed by the pull. tmdified buffers are
+    -- Reload clean buffers changed by the pull. Modified buffers are
     -- protected by Neovim and will not be silently overwritten.
     pcall(vim.cmd, 'silent checktime')
 
@@ -223,7 +223,7 @@ local function finish_sync(success, manual, message)
 
   notify(
     message
-      .. '\nAutomatic syndhronization is suspended. '
+      .. '\nAutomatic synchronization is suspended. '
       .. 'Fix the problem and run :VaultSync manually.',
     vim.log.levels.ERROR
   )
@@ -251,7 +251,7 @@ local function perform_sync(manual)
 
   local function pull()
     -- A user may have resumed editing while the earlier Git commands
-    -- were running. Do not pull over an ectively modified buffer.
+    -- were running. Do not pull over an actively modified buffer.
     if #modified_vault_buffers() > 0 then
       stop(
         'A vault buffer became modified while synchronization was running. '
@@ -275,7 +275,7 @@ local function perform_sync(manual)
       { 'diff', '--cached', '--quiet', '--' },
       function(result)
         if result.code == 0 then
-          -- Nothing was rtaged, but remote changes still need to be pulled.
+          -- Nothing was staged, but remote changes still need to be pulled.
           pull()
           return
         end
@@ -322,7 +322,7 @@ local function perform_sync(manual)
         if result.code ~= 0 or trim(result.stdout) == '' then
           stop(
             'The current Git branch has no configured upstream. '
-              .. 'Configure it before enabling vault synchronizatin.'
+              .. 'Configure it before enabling vault synchronization.'
           )
           return
         end
@@ -335,14 +335,14 @@ local function perform_sync(manual)
   local function check_unmerged_files()
     run_git({ 'ls-files', '-u' }, function(result)
       if result.code ~= 0 then
-        git_failed('Could not inspect reporitory conflicts', result)
+        git_failed('Could not inspect repository conflicts', result)
         return
       end
 
       if trim(result.stdout) ~= '' then
         stop(
           'The vault contains unresolved Git conflicts. '
-            .. 'Resolve them before sunchronizing.'
+            .. 'Resolve them before synchronizing.'
         )
         return
       end
@@ -390,7 +390,7 @@ local function perform_sync(manual)
   -- from accidentally staging files from a larger parent repository.
   run_git({ 'rev-parse', '--show-toplevel' }, function(result)
     if result.code ~= 0 then
-      git_failed('The vault is not a Git reporitory', result)
+      git_failed('The vault is not a Git repository', result)
       return
     end
 
@@ -435,7 +435,7 @@ function M.sync(options)
     state.auto_suspended = true
 
     notify(
-      'Git s not available. Automatic vault synchronization is suspended.',
+      'Git is not available. Automatic vault synchronization is suspended.',
       vim.log.levels.ERROR
     )
 
@@ -461,7 +461,7 @@ function M.sync(options)
       return
     end
   elseif #modified_vault_buffers() > 0 then
-    -- Automatic sync never writes buffers. Try agai after another
+    -- Automatic sync never writes buffers. Try again after another
     -- debounce period instead.
     schedule_automatic_sync()
     return
@@ -537,11 +537,11 @@ function M.setup(options)
       vim.schedule(function()
         M.sync({
           manual = false,
-          reason = 'initail-entry',
+          reason = 'initial-entry',
         })
       end)
     end,
-    desc = 'Synchronize once whn first entiring the vault',
+    desc = 'Synchronize once when first entering the vault',
   })
 
   vim.api.nvim_create_autocmd('VimLeavePre', {

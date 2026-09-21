@@ -13,7 +13,7 @@ local add = vim.pack.add
 local now_if_args, later = Config.now_if_args, Config.later
 
 -- Keep LSP configuration names and Mason Package names paired explicitly.
--- The first value is used by 'vim.lsp.enable()'o the second by Mason
+-- The first value is used by 'vim.lsp.enable()', the second by Mason
 local language_servers = {
   -- Neovim
   { lsp = "lua_ls", mason = "lua-language-server" },
@@ -57,6 +57,7 @@ vim.list_extend(mason_tools, {
   -- Standalone formatters and linters
   "prettier",
   "stylua",
+  "debugpy",
 })
 
 -- Tree-sitter ================================================================
@@ -175,12 +176,34 @@ end)
 -- Troubleshooting:
 -- - Run `:checkhealth vim.lsp` to see potential issues.
 now_if_args(function()
-  add({ "https://github.com/neovim/nvim-lspconfig" })
+  add({
+    "https://github.com/neovim/nvim-lspconfig",
+    "https://github.com/b0o/SchemaStore.nvim",
+  })
+
+  -- Keep JSON and YAML schemas in one maintained catalog. Disable YAML LS's
+  -- built-in catalog to avoid duplicate schema registrations.
+  local schemastore = require('schemastore')
+  vim.lsp.config('jsonls', {
+    settings = {
+      json = {
+        schemas = schemastore.json.schemas(),
+        validate = { enable = true },
+      },
+    },
+  })
+  vim.lsp.config('yamlls', {
+    settings = {
+      yaml = {
+        schemaStore = { enable = false, url = '' },
+        schemas = schemastore.yaml.schemas(),
+      },
+    },
+  })
 
   -- Use `:h vim.lsp.enable()` to automatically enable language server based on
   -- the rules provided by 'nvim-lspconfig'.
   -- Use `:h vim.lsp.config()` or 'after/lsp/' directory to configure servers.
-  -- Uncomment and tweak the following `vim.lsp.enable()` call to enable servers.
   vim.lsp.enable(lsp_names)
 end)
 
@@ -239,6 +262,49 @@ later(function()
   })
 end)
 
+-- Debugging ==================================================================
+
+-- 'nvim-dap' provides the Debug Adapter Protocol client. The Python extension
+-- uses Mason's debugpy installation, while dap-ui and virtual text make a
+-- paused debugging session inspectable without leaving Neovim.
+later(function()
+  add({
+    'https://github.com/mfussenegger/nvim-dap',
+    'https://github.com/mfussenegger/nvim-dap-python',
+    'https://github.com/rcarriga/nvim-dap-ui',
+    'https://github.com/nvim-neotest/nvim-nio',
+    'https://github.com/theHamsta/nvim-dap-virtual-text',
+  })
+
+  local dap = require('dap')
+  local dapui = require('dapui')
+  local debugpy_root = vim.fs.joinpath(vim.fn.stdpath('data'), 'mason', 'packages', 'debugpy', 'venv')
+  local debugpy_python = vim.fs.joinpath(
+    debugpy_root,
+    vim.fn.has('win32') == 1 and 'Scripts/python.exe' or 'bin/python'
+  )
+
+  require('dap-python').setup(debugpy_python)
+  dapui.setup()
+  require('nvim-dap-virtual-text').setup()
+
+  dap.listeners.after.event_initialized['config'] = dapui.open
+  dap.listeners.before.event_terminated['config'] = dapui.close
+  dap.listeners.before.event_exited['config'] = dapui.close
+end)
+
+-- Database ===================================================================
+
+-- Dadbod provides database connections and query execution; Dadbod UI supplies
+-- an interactive connection and result browser. Configure connections through
+-- `:DBUIAddConnection` instead of storing credentials in this repository.
+later(function()
+  add({
+    'https://github.com/tpope/vim-dadbod',
+    'https://github.com/kristijanhusak/vim-dadbod-ui',
+  })
+end)
+
 -- Snippets ===================================================================
 
 -- Although 'mini.snippets' provides functionality to manage snippet files, it
@@ -283,8 +349,12 @@ end)
 -- end)
 
 -- My plugins =================================================================
+--
+-- This section contains personal integrations beyond the MiniMax baseline.
+-- Each subsection briefly states its role; setup details remain with the code.
 
--- Mason
+-- Tool installation ==========================================================
+-- Mason installs the language servers, formatters, and debug tools listed above.
 Config.now(function()
   add({
     "https://github.com/mason-org/mason.nvim",
@@ -310,7 +380,8 @@ Config.now(function()
   })
 end)
 
--- Catpuccin colorscheme
+-- Colorscheme ================================================================
+-- Catppuccin provides the configured theme and Mini integration.
 Config.now(function()
   add({
     {
@@ -361,41 +432,31 @@ Config.now(function()
   vim.cmd.colorscheme("catppuccin-mocha")
 end)
 
--- Nvim-tmux-navigation
-Config.later(function()
-  local is_windows = vim.fn.has("win32") == 1
+-- Split and pane navigation =================================================
+-- Herdr is the primary split and pane navigation provider. It owns Normal-mode
+-- `<C-hjkl>` for navigation and `<M-hjkl>` for resizing. Configure it eagerly:
+-- setup writes the matching Herdr-side key configuration.
+Config.now(function()
+  add({ 'https://github.com/lmilojevicc/herdr-splits.nvim' })
 
-  if is_windows then
-    return
-  end
-
-  add({
-    {
-      src = "https://github.com/alexghergh/nvim-tmux-navigation",
-    },
-  })
-
-  -- MiniBasics remains responsible for navigation outside tmux.
-  if not vim.env.TMUX then
-    return
-  end
-
-  local navigation = require("nvim-tmux-navigation")
-
+  local navigation = require('herdr-splits')
   navigation.setup({
-    disable_when_zoomed = true,
+    auto_sync_herdr = true,
   })
 
   local map = vim.keymap.set
-  local opts = { silent = true }
-
-  map("n", "<C-h>", navigation.NvimTmuxNavigateLeft, opts)
-  map("n", "<C-j>", navigation.NvimTmuxNavigateDown, opts)
-  map("n", "<C-k>", navigation.NvimTmuxNavigateUp, opts)
-  map("n", "<C-l>", navigation.NvimTmuxNavigateRight, opts)
+  map('n', '<C-h>', navigation.move_cursor_left,  { desc = 'Navigate left', silent = true })
+  map('n', '<C-j>', navigation.move_cursor_down,  { desc = 'Navigate down', silent = true })
+  map('n', '<C-k>', navigation.move_cursor_up,    { desc = 'Navigate up', silent = true })
+  map('n', '<C-l>', navigation.move_cursor_right, { desc = 'Navigate right', silent = true })
+  map('n', '<M-h>', navigation.resize_left,       { desc = 'Resize left', silent = true })
+  map('n', '<M-j>', navigation.resize_down,       { desc = 'Resize down', silent = true })
+  map('n', '<M-k>', navigation.resize_up,         { desc = 'Resize up', silent = true })
+  map('n', '<M-l>', navigation.resize_right,      { desc = 'Resize right', silent = true })
 end)
 
--- LazyGit
+-- LazyGit ====================================================================
+-- Optional floating terminal UI; registered only when the executable exists.
 Config.later(function()
   if vim.fn.executable("lazygit") ~= 1 then
     return
@@ -463,7 +524,8 @@ Config.later(function()
   })
 end)
 
--- CSVView
+-- CSV ========================================================================
+-- CSVView adds table-oriented navigation and display for CSV buffers.
 Config.later(function()
   add({
     { src = "https://github.com/hat0uma/csvview.nvim" },
@@ -471,7 +533,8 @@ Config.later(function()
   require("csvview").setup()
 end)
 
--- Obsidian
+-- Obsidian ===================================================================
+-- Vault notes, custom open-or-create commands, and Git synchronization.
 now_if_args(function()
   add({
     {
@@ -480,11 +543,14 @@ now_if_args(function()
     },
   })
 
-  local vault_name        = 'second-brain'
-  local vault_path        = '~/vault/' .. vault_name
-  local inbox_path        = 'inbox'
-  local notes_path        = 'notes'
-  local attachments_path  = 'assets'
+  local vault = require('custom.settings').vault
+  local vault_name = vault.name
+  local vault_path = vault.path
+  local inbox_path = vault.inbox_dir
+  local daily_path = vault.daily_dir
+  local notes_path = vault.notes_dir
+  local attachments_path = vault.attachments_dir
+  local templates_path = vault.templates_dir
 
   local function slugify(title)
     local slug = vim.trim(title or 'untitled'):lower()
@@ -534,13 +600,13 @@ now_if_args(function()
     note_id_func = note_id,
 
     daily_notes = {
-      folder = 'daily',
+      folder = daily_path,
       date_format = '%Y-%m-%d',
       workdays_only = false,
     },
 
     templates = {
-      folder = 'templates',
+      folder = templates_path,
       date_format = '%Y-%m-%d',
       time_format = '%H:%M',
     },
@@ -653,7 +719,7 @@ now_if_args(function()
     desc = 'Open or create a vault note',
   })
 
-  -- Vault sync
+  -- Keep synchronization setup alongside the vault configuration it uses.
   require('custom.vault_sync').setup({
     vault = vault_path,
     debounce_ms = 60 * 1000,
@@ -662,8 +728,7 @@ now_if_args(function()
   })
 end)
 
-
--- Render Markdown
+-- Markdown rendering =========================================================
 now_if_args(function()
   add({
     {
@@ -688,7 +753,7 @@ now_if_args(function()
   })
 end)
 
--- Markdown table editing
+-- Markdown table editing =====================================================
 now_if_args(function()
   add({
     {

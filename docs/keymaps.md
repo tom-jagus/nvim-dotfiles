@@ -14,10 +14,14 @@ duplicate every native Vim or automatically generated `mini.nvim` mapping.
 | Normal | `<Esc>` | Clear search highlighting |
 | Normal | `[p` | Paste linewise above the current line |
 | Normal | `]p` | Paste linewise below the current line |
+| Normal | `<C-h/j/k/l>` | Navigate between Neovim windows and Herdr panes |
+| Normal | `<M-h/j/k/l>` | Resize the current Neovim window or Herdr pane |
 | Terminal | `<Esc><Esc>` | Enter Terminal-Normal mode |
 
-`mini.basics` also supplies common mappings such as `<C-s>` for saving,
-`<C-h/j/k/l>` for window navigation, and backslash-prefixed option toggles.
+`mini.basics` also supplies common mappings such as `<C-s>` for saving and
+backslash-prefixed option toggles. Herdr owns the Normal-mode navigation and
+resize mappings; `mini.move` retains `<M-h/j/k/l>` in Visual mode for moving a
+selection.
 `mini.bracketed`, `mini.surround`, `mini.ai`, and other modules retain their
 documented default mappings.
 
@@ -36,6 +40,21 @@ documented default mappings.
 `<Leader>bo` intentionally preserves the current buffer, modified buffers, and
 unlisted utility buffers. It uses `mini.bufremove` so the window layout remains
 usable.
+
+## Debug and database: `<Leader>d`
+
+| Mapping | Action |
+|---|---|
+| `<Leader>dB` | Toggle Dadbod UI |
+| `<Leader>db` | Toggle a breakpoint |
+| `<Leader>dc` / `<Leader>dC` | Continue / continue to cursor |
+| `<Leader>di` / `<Leader>do` / `<Leader>dO` | Step into / over / out |
+| `<Leader>dr` | Toggle the debug REPL |
+| `<Leader>dt` | Terminate the debug session |
+| `<Leader>du` | Toggle the debug UI |
+
+Dadbod UI stores connections outside this repository. Python debugging uses
+Mason-managed `debugpy`.
 
 ## Explore and edit: `<Leader>e`
 

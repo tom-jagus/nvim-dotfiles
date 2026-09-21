@@ -83,7 +83,7 @@ Run each from a shell:
 nvim
 nvim .
 nvim path/to/file.lua
-nvim ~/vault/second-brain/notes/example.md
+nvim ~/valuts/default/notes/example.md
 ```
 
 Verify:
@@ -147,7 +147,8 @@ backup.
 Before a tagged release:
 
 1. Install only the documented system requirements.
-2. Clone the repository into the platform's Neovim configuration directory.
+2. Clone the repository outside the Neovim configuration directory and run
+   `./install.sh` to create the configuration symlink.
 3. Start Neovim and allow native packages, Mason tools, and parsers to install.
 4. Run the health checks.
 5. Complete the startup and language smoke tests.
@@ -155,8 +156,7 @@ Before a tagged release:
 7. Validate platform-specific terminal behavior.
 8. Record any new prerequisite in `README.md` and `docs/tooling.md`.
 
-Linux and Windows should follow the same acceptance criteria, with tmux tested
-only where it is applicable.
+Validate Herdr navigation and resizing from a Herdr-managed pane.
 
 ## Troubleshooting
 

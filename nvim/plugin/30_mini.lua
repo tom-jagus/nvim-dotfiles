@@ -619,7 +619,18 @@ end)
 --
 -- Example usage in Visual mode:
 -- - `<M-h>`/`<M-j>`/`<M-k>`/`<M-l>` - move selection left/down/up/right
-later(function() require('mini.move').setup() end)
+-- Herdr owns Normal-mode `<M-hjkl>` for pane resizing. Keep MiniMove's
+-- Visual-mode selection movement while disabling its conflicting line mappings.
+later(function()
+  require('mini.move').setup({
+    mappings = {
+      line_left = '',
+      line_right = '',
+      line_down = '',
+      line_up = '',
+    },
+  })
+end)
 
 -- Text edit operators. All operators have mappings for:
 -- - Regular operator (waits for motion/textobject to use)

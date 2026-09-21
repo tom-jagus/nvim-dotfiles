@@ -10,7 +10,7 @@ The configuration separates three dependency layers:
    Neovim, Git, ripgrep, LazyGit, a compiler, and PowerShell.
 
 Mason package names and native LSP configuration names are paired explicitly in
-`plugin/40_plugins.lua`. Assertions reject incomplete entries rather than
+`nvim/plugin/40_plugins.lua`. Assertions reject incomplete entries rather than
 silently producing a sparse tool list.
 
 ## Language servers
@@ -25,12 +25,12 @@ silently producing a sparse tool list.
 | Web | HTML | `html` | `html-lsp` |
 | Web | CSS | `cssls` | `css-lsp` |
 | Web | JavaScript/TypeScript | `ts_ls` | `typescript-language-server` |
-| Structured data | JSON/JSONC | `jsonls` | `json-lsp` |
-| Structured data | YAML | `yamlls` | `yaml-language-server` |
+| Structured data | JSON/JSONC with SchemaStore schemas | `jsonls` | `json-lsp` |
+| Structured data | YAML with SchemaStore schemas | `yamlls` | `yaml-language-server` |
 | Structured data | TOML | `taplo` | `taplo` |
 | Data | SQL | `sqruff` | `sqruff` |
 
-Server-specific behavior lives under `after/lsp/`:
+Server-specific behavior lives under `nvim/after/lsp/`:
 
 - `lua_ls.lua` models Neovim's LuaJIT runtime and runtime library.
 - `basedpyright.lua` leaves import organization to Ruff.
@@ -100,12 +100,17 @@ not needed or is already covered by native Neovim.
 | nvim-treesitter | Parser installation and query files |
 | nvim-treesitter-textobjects | Structural textobject queries |
 | nvim-lspconfig | Native LSP configuration definitions |
+| SchemaStore.nvim | Maintained JSON and YAML schema catalog |
+| nvim-dap | Debug Adapter Protocol client |
+| nvim-dap-python | Python debugging through Mason-managed debugpy |
+| nvim-dap-ui + nvim-dap-virtual-text | Debugger controls, scopes, stacks, and inline values |
+| vim-dadbod + vim-dadbod-ui | Interactive database connections, queries, and result browsing |
 | mason.nvim | Editor-local external tool management |
 | mason-tool-installer.nvim | Declarative tool installation |
 | conform.nvim | Formatter orchestration |
 | friendly-snippets | Community snippet collection |
 | catppuccin.nvim | Catppuccin Mocha theme |
-| nvim-tmux-navigation | Seamless Neovim/tmux pane navigation |
+| herdr-splits.nvim | Seamless Neovim/Herdr split and pane navigation |
 | csvview.nvim | On-demand CSV/TSV tabular view |
 | obsidian.nvim | Vault-aware Markdown and note operations |
 | render-markdown.nvim | Rendered Markdown presentation |
@@ -128,7 +133,6 @@ useful.
 
 ## Intentionally absent
 
-There is no separate linter framework, DAP client, test runner, database client,
-or domain-specific Power Query/DAX/TMDL integration in version 1. Installed
-tools should have an active consumer; otherwise they should not be added merely
-for completeness.
+There is no separate linter framework, test runner, or domain-specific Power
+Query/DAX/TMDL integration. Installed tools should have an active consumer;
+otherwise they should not be added merely for completeness.

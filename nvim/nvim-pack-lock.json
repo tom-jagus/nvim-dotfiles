@@ -1,0 +1,94 @@
+{
+  "plugins": {
+    "SchemaStore.nvim": {
+      "rev": "b73cf982d16ff69e528d2ab269482f11c0825f64",
+      "src": "https://github.com/b0o/SchemaStore.nvim"
+    },
+    "catppuccin": {
+      "rev": "79e2049a0fdf7ec840f8463fe1d962c94493196b",
+      "src": "https://github.com/catppuccin/nvim"
+    },
+    "conform.nvim": {
+      "rev": "619363c30309d29ffa631e67c8183f2a72caa373",
+      "src": "https://github.com/stevearc/conform.nvim"
+    },
+    "csvview.nvim": {
+      "rev": "5c22774c3ecc7f8883af5d143b366e45b1f0875d",
+      "src": "https://github.com/hat0uma/csvview.nvim"
+    },
+    "friendly-snippets": {
+      "rev": "6cd7280adead7f586db6fccbd15d2cac7e2188b9",
+      "src": "https://github.com/rafamadriz/friendly-snippets"
+    },
+    "herdr-splits.nvim": {
+      "rev": "43f4e4cba74499d5c7ab16f13555d97309910581",
+      "src": "https://github.com/lmilojevicc/herdr-splits.nvim"
+    },
+    "markdown-table-mode.nvim": {
+      "rev": "0b768b58ec45afb7cb091175e837b7f5461663af",
+      "src": "https://github.com/Kicamon/markdown-table-mode.nvim"
+    },
+    "mason-tool-installer.nvim": {
+      "rev": "443f1ef8b5e6bf47045cb2217b6f748a223cf7dc",
+      "src": "https://github.com/WhoIsSethDaniel/mason-tool-installer.nvim"
+    },
+    "mason.nvim": {
+      "rev": "2a6940af80375532e5e9e7c1f2fc6319a1b7a69d",
+      "src": "https://github.com/mason-org/mason.nvim"
+    },
+    "mini.nvim": {
+      "rev": "8bf5c57bc82dd590932faa41bfde9fd6d40a9433",
+      "src": "https://github.com/nvim-mini/mini.nvim"
+    },
+    "nvim-dap": {
+      "rev": "cfa2d58f4537aca6ca83e2de1a0d9f1491121264",
+      "src": "https://github.com/mfussenegger/nvim-dap"
+    },
+    "nvim-dap-python": {
+      "rev": "1808458eba2b18f178f990e01376941a42c7f93b",
+      "src": "https://github.com/mfussenegger/nvim-dap-python"
+    },
+    "nvim-dap-ui": {
+      "rev": "cc9dd33aade7f20bae414d0cba163bc60d4d4b43",
+      "src": "https://github.com/rcarriga/nvim-dap-ui"
+    },
+    "nvim-dap-virtual-text": {
+      "rev": "fbdb48c2ed45f4a8293d0d483f7730d24467ccb6",
+      "src": "https://github.com/theHamsta/nvim-dap-virtual-text"
+    },
+    "nvim-lspconfig": {
+      "rev": "9ae2b3b63b924b1329724dae76e9d2c5c40b389c",
+      "src": "https://github.com/neovim/nvim-lspconfig"
+    },
+    "nvim-nio": {
+      "rev": "edcc181a875301dd21840189aa2f2f9ad69fc172",
+      "src": "https://github.com/nvim-neotest/nvim-nio"
+    },
+    "nvim-treesitter": {
+      "rev": "0f32dff7f19476629c77467f887b95e5e2d33509",
+      "src": "https://github.com/nvim-treesitter/nvim-treesitter"
+    },
+    "nvim-treesitter-textobjects": {
+      "rev": "898ee307df58f854d11cd7edd06472574d48014e",
+      "src": "https://github.com/nvim-treesitter/nvim-treesitter-textobjects"
+    },
+    "obsidian.nvim": {
+      "rev": "69fe7c6bf61a5222b5061a9a9dfc5023f2ec0fdc",
+      "src": "https://github.com/obsidian-nvim/obsidian.nvim",
+      "version": ">=0.0.0"
+    },
+    "render-markdown.nvim": {
+      "rev": "f422cb5c6855f150e2ddcfaf44e7157b98b34f6a",
+      "src": "https://github.com/MeanderingProgrammer/render-markdown.nvim",
+      "version": ">=0.0.0"
+    },
+    "vim-dadbod": {
+      "rev": "6d1d41da4873a445c5605f2005ad2c68c99d8770",
+      "src": "https://github.com/tpope/vim-dadbod"
+    },
+    "vim-dadbod-ui": {
+      "rev": "afd07819d8efcefc3317205b855ad4e3513b0011",
+      "src": "https://github.com/kristijanhusak/vim-dadbod-ui"
+    }
+  }
+}

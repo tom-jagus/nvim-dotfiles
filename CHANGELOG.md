@@ -25,7 +25,7 @@ and releases follow [Semantic Versioning](https://semver.org/).
 - Conform-based explicit formatting with LSP fallback.
 - Git workflows through `mini.git`, `mini.diff`, and an optional floating
   LazyGit terminal.
-- Linux/tmux navigation and Windows PowerShell integration.
+- Herdr navigation and Windows PowerShell integration.
 - Markdown prose defaults, rendered Markdown, table alignment, and spell
   checking.
 - Obsidian workspace integration, daily notes, templates, attachments,

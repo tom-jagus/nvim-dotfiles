@@ -77,7 +77,21 @@ The expected sequence for a source file is:
 Formatting is intentionally manual. Automatic formatting should not rewrite a
 file merely because it was saved.
 
-## Terminal and tmux
+## Python debugging
+
+Python debugging uses `nvim-dap`, `nvim-dap-python`, and Mason-managed
+`debugpy`. Toggle a breakpoint with `<Leader>db`, then start or continue with
+`<Leader>dc`. The debug UI opens when a session starts and closes when it ends;
+use `<Leader>du` to toggle it manually.
+
+## Database queries
+
+Use `<Leader>dB` to open Dadbod UI and add connections through its interface.
+Keep credentials in the local Dadbod configuration or environment, never in
+this repository. Dadbod supports database URLs and adapters appropriate to the
+installed database clients.
+
+## Terminal and Herdr
 
 `<Leader>tt` opens a vertical terminal split and `<Leader>tT` a horizontal one.
 Terminal buffers are unlisted and wiped when hidden so they do not pollute the
@@ -88,13 +102,17 @@ On Windows, the shell is selected in this order:
 1. PowerShell 7 (`pwsh`)
 2. Windows PowerShell (`powershell`)
 
-Commands run non-interactively with UTF-8 input and output. On non-Windows
-systems, tmux navigation is loaded only when running inside tmux; outside tmux,
-the normal `mini.basics` split navigation remains active.
+Commands run non-interactively with UTF-8 input and output.
+
+Herdr is the primary split and pane navigation provider. In Normal mode,
+`<C-h/j/k/l>` moves between Neovim windows and Herdr panes, while
+`<M-h/j/k/l>` resizes panes. Herdr owns those Normal-mode mappings;
+`mini.move` retains its Visual-mode selection movement without conflicting
+Normal-mode mappings.
 
 ## Markdown editing
 
-`after/ftplugin/markdown.lua` applies Markdown-only defaults:
+`nvim/after/ftplugin/markdown.lua` applies Markdown-only defaults:
 
 - visual wrapping with `linebreak` and `breakindent`;
 - no automatic hard line wrapping;
@@ -117,7 +135,7 @@ There are two deliberately separate Markdown contexts:
 | Context | Owner |
 |---|---|
 | Normal Markdown repositories and workspaces | Markdown Oxide |
-| Files under `~/vault/second-brain/` | obsidian.nvim |
+| Files under `~/valuts/default/` | obsidian.nvim |
 
 Markdown Oxide's root resolver exits without attaching for vault files.
 Obsidian therefore remains the single owner of vault links, notes, aliases, and
@@ -128,7 +146,7 @@ workspace-aware operations.
 The editor integration assumes:
 
 ```text
-~/vault/second-brain/
+~/valuts/default/
 ├── notes/
 ├── inbox/
 ├── daily/

@@ -2,7 +2,7 @@ local function normalize(path)
   return vim.fs.normalize(path):gsub('\\', '/')
 end
 
-local vault = normalize(vim.fn.expand('~/vault/second-brain'))
+local vault = normalize(vim.fn.expand(require('custom.settings').vault.path))
 
 local function is_in_vault(path)
   path = normalize(path)

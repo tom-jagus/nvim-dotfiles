@@ -15,16 +15,18 @@ small custom workflows over overlapping plugins.
 - Cohesive editing, navigation, completion, sessions, Git, files, and picker
   workflows built primarily with `mini.nvim`.
 - Tree-sitter, native LSP, Mason-managed tools, and Conform formatting.
-- Language support for Lua, Python, C#, Bash, web languages, structured data,
-  Markdown, and SQL.
+- Language support for Lua, Python, C#, Bash, web languages, structured data
+  with JSON/YAML schemas, Markdown, and SQL.
 - Git primitives through `mini.git` and `mini.diff`, plus an optional floating
   LazyGit interface.
+- Python debugging through `nvim-dap`, `nvim-dap-python`, and Mason-managed
+  `debugpy`; interactive database work through Dadbod UI.
 - Markdown-specific prose defaults, rendered Markdown, and editable pipe
   tables.
 - Obsidian integration with vault-wide open-or-create note commands.
 - Conservative, debounced synchronization for a Git-backed vault.
-- Explicit Linux and Windows behavior, including automatic PowerShell
-  selection on Windows and guarded tmux integration on non-Windows systems.
+- Explicit platform behavior, including automatic PowerShell selection on Windows
+  and Herdr-based split and pane navigation.
 
 ## Requirements
 
@@ -42,8 +44,7 @@ small custom workflows over overlapping plugins.
   searching
 - A terminal with true-color and Nerd Font symbol support
 - [LazyGit](https://github.com/jesseduffield/lazygit) for the floating Git UI
-- [tmux](https://github.com/tmux/tmux) when cross-pane navigation is wanted on
-  Linux or another non-Windows system
+- [Herdr](https://github.com/lmilojevicc/herdr) for split and pane navigation
 - PowerShell 7 (`pwsh`) on Windows; Windows PowerShell is used as a fallback
 
 Mason installs the configured language servers and formatters inside Neovim's
@@ -51,37 +52,21 @@ data directory. Run `:checkhealth mason` if it reports missing platform tools.
 
 ## Installation
 
-Back up or move an existing Neovim configuration before cloning this one.
-
-### Linux and other Unix-like systems
+Clone this repository anywhere outside Neovim's configuration directory, then
+link its `nvim/` directory into the active configuration location:
 
 ```bash
-config_root="${XDG_CONFIG_HOME:-$HOME/.config}"
-mv "$config_root/nvim" "$config_root/nvim.backup"
-git clone https://github.com/tom-jagus/nvim "$config_root/nvim"
-nvim
+git clone https://github.com/tom-jagus/nvim ~/src/nvim
+cd ~/src/nvim
+./install.sh
 ```
 
-Skip the `mv` command when no existing configuration is present.
+The installer creates `${XDG_CONFIG_HOME:-$HOME/.config}/nvim` as a symlink to
+this repository's `nvim/` directory. It refuses to replace an existing config;
+use `./install.sh --backup` to move that config to a timestamped backup first.
 
-### Windows PowerShell
-
-```powershell
-$configRoot = if ($env:XDG_CONFIG_HOME) {
-  $env:XDG_CONFIG_HOME
-} else {
-  $env:LOCALAPPDATA
-}
-
-$target = Join-Path $configRoot "nvim"
-
-if (Test-Path $target) {
-  Move-Item $target "$target.backup"
-}
-
-git clone https://github.com/tom-jagus/nvim $target
-nvim
-```
+The installer currently targets Bash environments. Native Windows users can use
+Git Bash or create the equivalent directory symlink manually.
 
 On the first start:
 
@@ -95,15 +80,12 @@ On the first start:
 The documentation uses this intentionally generic example:
 
 ```text
-~/vault/second-brain/
+~/valuts/default/
 ```
 
-Use the same resolved path for:
-
-- the Obsidian workspace in `plugin/40_plugins.lua`;
-- the Markdown Oxide exclusion in `after/lsp/markdown_oxide.lua`;
-- the vault-sync setup in `plugin/40_plugins.lua`;
-- the default in `lua/custom/vault_sync.lua`, if that default is retained.
+Configure the vault once in `nvim/lua/custom/settings.lua`. The Obsidian
+workspace, Markdown Oxide exclusion, and vault-sync module all consume that
+value.
 
 The vault must be the root of its own Git repository and the current branch
 must have an upstream before synchronization can run.
@@ -112,24 +94,17 @@ must have an upstream before synchronization can run.
 
 ```text
 .
-├── init.lua
-├── plugin/
-│   ├── 10_options.lua
-│   ├── 20_keymaps.lua
-│   ├── 30_mini.lua
-│   └── 40_plugins.lua
-├── lua/
-│   └── custom/
-│       └── vault_sync.lua
-├── after/
-│   ├── ftplugin/
-│   │   └── markdown.lua
-│   └── lsp/
-│       ├── basedpyright.lua
-│       ├── lua_ls.lua
-│       ├── markdown_oxide.lua
-│       └── ruff.lua
-└── docs/
+├── nvim/                  # Symlinked to ~/.config/nvim by install.sh
+│   ├── init.lua
+│   ├── after/
+│   ├── lua/
+│   ├── plugin/
+│   ├── snippets/
+│   └── nvim-pack-lock.json
+├── docs/
+├── install.sh
+├── LICENSE
+└── README.md
 ```
 
 See [architecture](docs/architecture.md) for the responsibility and loading
@@ -174,9 +149,10 @@ plugins, language tooling, formatting, Git, and terminal behavior are designed
 to work on both. Platform-specific behavior is isolated:
 
 - PowerShell is selected only on Windows.
-- tmux integration is skipped on Windows and activates only inside tmux.
+- Herdr owns split and pane navigation through `<C-h/j/k/l>` and pane resizing
+  through `<M-h/j/k/l>`.
 - external programs are detected before optional integrations are enabled.
-- paths are normalized before vault membership and repository-root checks.
+- vault paths are expanded, normalized, and canonicalized before comparisons.
 
 Vault synchronization intentionally depends on each environment's Git
 credentials, remote, and upstream configuration rather than embedding any

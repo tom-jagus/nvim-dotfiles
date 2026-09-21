@@ -33,8 +33,8 @@ Options, mappings, `mini.nvim`, and third-party integrations evolve for
 different reasons. Keeping them in `10_`, `20_`, `30_`, and `40_` layers makes
 their ownership and startup order visible.
 
-**Consequence:** Complex custom implementations belong in `lua/custom/`, not in
-the numbered integration file.
+**Consequence:** Complex custom implementations belong in `nvim/lua/custom/`,
+not in the numbered integration file.
 
 ## D004: Schedule by startup need
 
@@ -135,9 +135,9 @@ different interaction scopes, not duplicated functionality.
 **Status:** Accepted
 
 Paths are normalized, PowerShell selection is explicit, terminal commands avoid
-interactive profiles, tmux is guarded, and optional executables are detected.
-Core Windows workflows are exercised rather than documented as a theoretical
-port.
+interactive profiles, and optional executables are detected. Herdr owns pane
+navigation independently of operating-system shell selection. Core Windows
+workflows are exercised rather than documented as a theoretical port.
 
 Vault synchronization retains the same intended behavior on both platforms,
 while credentials, remotes, and vault location remain environment-owned.

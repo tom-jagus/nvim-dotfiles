@@ -54,6 +54,7 @@ nmap('<Esc>', '<Cmd>nohlsearch<CR>', 'Clear search highlight')
 -- Add an entry if you create a new group.
 Config.leader_group_clues = {
   { mode = 'n', keys = '<Leader>b', desc = '+Buffer' },
+  { mode = 'n', keys = '<Leader>d', desc = '+Debug/Database' },
   { mode = 'n', keys = '<Leader>e', desc = '+Explore/Edit' },
   { mode = 'n', keys = '<Leader>f', desc = '+Find' },
   { mode = 'n', keys = '<Leader>g', desc = '+Git' },
@@ -106,7 +107,7 @@ local delete_other_buffers = function()
 
   if modified_count > 0 then
     vim.notify(
-      ('Kepb %d modified buffen(s) ofen'): format(modified_count),
+      ('Kept %d modified buffer(s) open'): format(modified_count),
       vim.log.levels.WARN
     )
   end
@@ -120,6 +121,19 @@ nmap_leader('bo', delete_other_buffers,                          'Delete others'
 nmap_leader('bs', new_scratch_buffer,                            'Scratch')
 nmap_leader('bw', '<Cmd>lua MiniBufremove.wipeout()<CR>',        'Wipeout')
 nmap_leader('bW', '<Cmd>lua MiniBufremove.wipeout(0, true)<CR>', 'Wipeout!')
+
+-- d is for 'Debug' and 'Database'. Python debugging uses 'nvim-dap' and
+-- 'nvim-dap-python'; database connections and queries use Dadbod UI.
+nmap_leader('dB', '<Cmd>DBUIToggle<CR>',                    'Database UI')
+nmap_leader('db', '<Cmd>lua require("dap").toggle_breakpoint()<CR>', 'Breakpoint (toggle)')
+nmap_leader('dc', '<Cmd>lua require("dap").continue()<CR>',          'Continue')
+nmap_leader('dC', '<Cmd>lua require("dap").run_to_cursor()<CR>',     'Continue to cursor')
+nmap_leader('di', '<Cmd>lua require("dap").step_into()<CR>',         'Step into')
+nmap_leader('do', '<Cmd>lua require("dap").step_over()<CR>',         'Step over')
+nmap_leader('dO', '<Cmd>lua require("dap").step_out()<CR>',          'Step out')
+nmap_leader('dr', '<Cmd>lua require("dap").repl.toggle()<CR>',       'REPL (toggle)')
+nmap_leader('dt', '<Cmd>lua require("dap").terminate()<CR>',         'Terminate')
+nmap_leader('du', '<Cmd>lua require("dapui").toggle()<CR>',          'Debug UI (toggle)')
 
 -- e is for 'Explore' and 'Edit'. Common usage:
 -- - `<Leader>ed` - open explorer at current working directory
@@ -243,7 +257,7 @@ nmap_leader('nb', '<Cmd>Obsidian backlinks<CR>', 'Backlinks')
 nmap_leader('nd', '<Cmd>Obsidian today<CR>', 'Daily note')
 nmap_leader('nD', '<Cmd>Obsidian dailies<CR>', 'Daily notes')
 nmap_leader('nf', '<Cmd>Obsidian quick_switch<CR>', 'Find note')
-nmap_leader('ng', '<Cmd>Obsidian tags<CR>', 'Fing tags')
+nmap_leader('ng', '<Cmd>Obsidian tags<CR>', 'Find tags')
 nmap_leader('ni', '<Cmd>lua require("obsidian.actions").insert_tag()<CR>', 'Insert tag')
 nmap_leader('nl', '<Cmd>Obsidian links<CR>', 'Outgoing links')
 nmap_leader('nn', '<Cmd>VaultNewNote<CR>', 'New note')

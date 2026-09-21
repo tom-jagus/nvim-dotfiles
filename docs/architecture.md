@@ -17,16 +17,21 @@ The main architectural constraints are:
 
 ## Configuration layers
 
+The repository root holds documentation and installation tooling. Its `nvim/`
+directory is the Neovim configuration root and is symlinked to
+`~/.config/nvim` by `install.sh`.
+
 | Layer | Responsibility |
 |---|---|
-| `init.lua` | Bootstraps the configuration, `mini.nvim`, shared `Config` helpers, and native package management. |
-| `plugin/10_options.lua` | Built-in Neovim behavior, diagnostics, terminal buffers, and Windows shell selection. |
-| `plugin/20_keymaps.lua` | General mappings, semantic Leader groups, and small mapping helpers. |
-| `plugin/30_mini.lua` | All enabled `mini.nvim` modules and their integration. |
-| `plugin/40_plugins.lua` | Tree-sitter, LSP, Mason, formatting, visual theme, Markdown/Obsidian features, and other selective plugins. |
-| `after/lsp/*.lua` | Server-specific configuration loaded by native LSP. |
-| `after/ftplugin/markdown.lua` | Buffer-local prose and Markdown editing defaults. |
-| `lua/custom/vault_sync.lua` | Stateful, safety-oriented Git synchronization for the configured vault. |
+| `nvim/init.lua` | Bootstraps the configuration, `mini.nvim`, shared `Config` helpers, and native package management. |
+| `nvim/plugin/10_options.lua` | Built-in Neovim behavior, diagnostics, terminal buffers, and Windows shell selection. |
+| `nvim/plugin/20_keymaps.lua` | General mappings, semantic Leader groups, and small mapping helpers. |
+| `nvim/plugin/30_mini.lua` | All enabled `mini.nvim` modules and their integration. |
+| `nvim/plugin/40_plugins.lua` | Tree-sitter, LSP, Mason, formatting, visual theme, Markdown/Obsidian features, and other selective plugins. |
+| `nvim/after/lsp/*.lua` | Server-specific configuration loaded by native LSP. |
+| `nvim/after/ftplugin/markdown.lua` | Buffer-local prose and Markdown editing defaults. |
+| `nvim/lua/custom/settings.lua` | Shared personal settings, including the vault path and directory layout. |
+| `nvim/lua/custom/vault_sync.lua` | Stateful, safety-oriented Git synchronization for the configured vault. |
 
 The numbered files are ordered by concern, not by plugin category alone.
 Options and mappings remain readable independently from plugin setup, while
@@ -63,6 +68,8 @@ available after startup.
 | Completion | `mini.completion` | native LSP, `mini.snippets`, friendly-snippets |
 | Language intelligence | native `vim.lsp` | nvim-lspconfig, Mason |
 | Formatting | Conform | LSP fallback |
+| Python debugging | `nvim-dap` + `nvim-dap-python` | Mason-managed debugpy, dap-ui |
+| Database queries | Dadbod UI | database-specific client and credentials |
 | Git primitives | `mini.git` + `mini.diff` | Git executable |
 | Full Git interface | LazyGit | custom floating terminal |
 | Sessions | `mini.sessions` | Neovim session files |
@@ -70,7 +77,7 @@ available after startup.
 | Vault-aware Markdown behavior | obsidian.nvim | `mini.pick` |
 | Markdown presentation | render-markdown.nvim | Tree-sitter |
 | Markdown table source alignment | markdown-table-mode.nvim | buffer-local Markdown behavior |
-| Vault synchronization | `lua/custom/vault_sync.lua` | Git executable |
+| Vault synchronization | `nvim/lua/custom/vault_sync.lua` | Git executable |
 
 The apparent overlaps are intentional:
 
@@ -87,8 +94,8 @@ Platform-specific logic stays local:
 
 - `10_options.lua` selects `pwsh`, then Windows PowerShell, only on Windows.
 - terminal buffers are unlisted and wiped when hidden on all platforms.
-- tmux navigation is skipped on Windows and only replaces split navigation
-  while `$TMUX` exists.
+- Herdr owns split and pane navigation and synchronizes its matching key
+  configuration during startup.
 - LazyGit is registered only when its executable is available.
 - vault paths are expanded, normalized, and canonicalized before comparisons.
 
@@ -96,7 +103,7 @@ No documentation or configuration should embed a workstation-specific absolute
 path. Use an expandable home-relative path such as:
 
 ```text
-~/vault/second-brain/
+~/vaults/default/
 ```
 
 ## Custom-module boundary
@@ -110,8 +117,8 @@ path. Use an expandable home-relative path such as:
 - failure recovery;
 - autocmd and user-command registration.
 
-Keeping this in `lua/custom/` prevents `40_plugins.lua` from becoming the
-implementation of a complex subsystem. The setup call remains at top level so
+Keeping this in `nvim/lua/custom/` prevents `nvim/plugin/40_plugins.lua` from
+becoming the implementation of a complex subsystem. The setup call remains at top level so
 the `:VaultSync` command and autocmds exist regardless of how Neovim was
 started.
 
