@@ -233,6 +233,18 @@ now_if_args(function()
     MiniFiles.set_bookmark('w', vim.fn.getcwd, { desc = 'Working directory' })
   end
   Config.new_autocmd('User', 'MiniFilesExplorerOpen', add_marks, 'Add bookmarks')
+
+  -- Open through :edit when Neovim needs an interactive swap-file choice.
+  -- mini.files normally loads via nvim_win_set_buf(), which can fail on that prompt.
+  local edit_entry = function()
+    local entry = MiniFiles.get_fs_entry()
+    if not entry or entry.fs_type ~= 'file' then return end
+    if MiniFiles.close() ~= true then return end
+    vim.cmd.edit(vim.fn.fnameescape(entry.path))
+  end
+  Config.new_autocmd('User', 'MiniFilesBufferCreate', function(ev)
+    vim.keymap.set('n', 'e', edit_entry, { buffer = ev.data.buf_id, desc = 'Edit file (swap prompt)' })
+  end, 'Edit mini.files entry with swap prompt')
 end)
 
 -- Miscellaneous small but useful functions. Example usage:

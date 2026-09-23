@@ -140,7 +140,6 @@ custom mapping reference is in [keymaps](docs/keymaps.md).
 - [Workflows](docs/workflows.md)
 - [Design decisions](docs/decisions.md)
 - [Maintenance and troubleshooting](docs/maintenance.md)
-- [Changelog](CHANGELOG.md)
 
 ## Platform scope
 

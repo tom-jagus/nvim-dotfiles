@@ -258,6 +258,5 @@ documented workflow or design decision.
 - [ ] Markdown ownership is correct inside and outside the vault.
 - [ ] Vault synchronization safety tests pass when changed.
 - [ ] Documentation matches behavior.
-- [ ] `CHANGELOG.md` contains the release.
 - [ ] Working tree is clean.
 - [ ] Version tag is created from the release commit.
