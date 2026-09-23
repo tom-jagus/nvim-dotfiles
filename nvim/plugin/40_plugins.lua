@@ -524,6 +524,14 @@ Config.later(function()
   })
 end)
 
+-- Pi bridge ==================================================================
+-- Send editor context to an existing Pi session in another terminal pane.
+-- The matching Pi extension must also be installed; mappings live in 20_keymaps.lua.
+later(function()
+  add({ 'https://github.com/carderne/pi-nvim' })
+  require('pi-nvim').setup({ set_default_keymaps = false })
+end)
+
 -- CSV ========================================================================
 -- CSVView adds table-oriented navigation and display for CSV buffers.
 Config.later(function()

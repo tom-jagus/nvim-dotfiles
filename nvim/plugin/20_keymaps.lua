@@ -62,6 +62,7 @@ Config.leader_group_clues = {
   { mode = 'n', keys = '<Leader>m', desc = '+Map' },
   { mode = 'n', keys = '<Leader>n', desc = '+Notes' },
   { mode = 'n', keys = '<Leader>o', desc = '+Other' },
+  { mode = 'n', keys = '<Leader>p', desc = '+Pi' },
   { mode = 'n', keys = '<Leader>s', desc = '+Session' },
   { mode = 'n', keys = '<Leader>t', desc = '+Terminal' },
   { mode = 'n', keys = '<Leader>v', desc = '+Visits' },
@@ -69,6 +70,7 @@ Config.leader_group_clues = {
   { mode = 'x', keys = '<Leader>g', desc = '+Git' },
   { mode = 'x', keys = '<Leader>l', desc = '+Language' },
   { mode = 'x', keys = '<Leader>n', desc = '+Notes' },
+  { mode = 'x', keys = '<Leader>p', desc = '+Pi' },
 }
 
 -- Helpers for a more concise `<Leader>` mappings.
@@ -277,6 +279,12 @@ xmap_leader('nN', '<Cmd>lua require("obsidian.actions").link_new()<CR>', 'New li
 nmap_leader('or', '<Cmd>lua MiniMisc.resize_window()<CR>', 'Resize to default width')
 nmap_leader('ot', '<Cmd>lua MiniTrailspace.trim()<CR>',    'Trim trailspace')
 nmap_leader('oz', '<Cmd>lua MiniMisc.zoom()<CR>',          'Zoom toggle')
+
+-- p is for 'Pi'. Send context to a running Pi session outside Neovim.
+nmap_leader('pp', '<Cmd>Pi<CR>',         'Send to Pi')
+nmap_leader('ps', '<Cmd>PiSessions<CR>', 'Select Pi session')
+nmap_leader('pi', '<Cmd>PiPing<CR>',     'Ping Pi')
+xmap_leader('pp', ':Pi<CR>',            'Send selection to Pi')
 
 -- s is for 'Session'. Common usage:
 -- - `<Leader>sn` - start new session

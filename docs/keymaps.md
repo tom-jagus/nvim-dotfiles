@@ -174,6 +174,18 @@ current file inside the configured vault.
 | `<Leader>ot` | Remove trailing whitespace |
 | `<Leader>oz` | Toggle zoom for the current window |
 
+## Pi: `<Leader>p`
+
+| Mode | Mapping | Action |
+|---|---|---|
+| Normal | `<Leader>pp` | Open the send-to-Pi dialog for the current file |
+| Visual | `<Leader>pp` | Open the dialog with the selection |
+| Normal | `<Leader>ps` | Select a running Pi session |
+| Normal | `<Leader>pi` | Check whether Pi is reachable |
+
+Pi runs in a separate terminal pane; these mappings require the Pi-side
+`pi-nvim` extension. Session discovery prefers a matching working directory.
+
 ## Sessions: `<Leader>s`
 
 | Mapping | Action |
