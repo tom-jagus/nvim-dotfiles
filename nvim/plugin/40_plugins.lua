@@ -444,15 +444,16 @@ Config.now(function()
     auto_sync_herdr = true,
   })
 
+  local modes = {'n', 'i', 't'}
   local map = vim.keymap.set
-  map('n', '<C-h>', navigation.move_cursor_left,  { desc = 'Navigate left', silent = true })
-  map('n', '<C-j>', navigation.move_cursor_down,  { desc = 'Navigate down', silent = true })
-  map('n', '<C-k>', navigation.move_cursor_up,    { desc = 'Navigate up', silent = true })
-  map('n', '<C-l>', navigation.move_cursor_right, { desc = 'Navigate right', silent = true })
-  map('n', '<M-h>', navigation.resize_left,       { desc = 'Resize left', silent = true })
-  map('n', '<M-j>', navigation.resize_down,       { desc = 'Resize down', silent = true })
-  map('n', '<M-k>', navigation.resize_up,         { desc = 'Resize up', silent = true })
-  map('n', '<M-l>', navigation.resize_right,      { desc = 'Resize right', silent = true })
+  map(modes, '<C-h>', navigation.move_cursor_left,  { desc = 'Navigate left', silent = true })
+  map(modes, '<C-j>', navigation.move_cursor_down,  { desc = 'Navigate down', silent = true })
+  map(modes, '<C-k>', navigation.move_cursor_up,    { desc = 'Navigate up', silent = true })
+  map(modes, '<C-l>', navigation.move_cursor_right, { desc = 'Navigate right', silent = true })
+  map(modes, '<M-h>', navigation.resize_left,       { desc = 'Resize left', silent = true })
+  map(modes, '<M-j>', navigation.resize_down,       { desc = 'Resize down', silent = true })
+  map(modes, '<M-k>', navigation.resize_up,         { desc = 'Resize up', silent = true })
+  map(modes, '<M-l>', navigation.resize_right,      { desc = 'Resize right', silent = true })
 end)
 
 -- LazyGit ====================================================================

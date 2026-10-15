@@ -56,8 +56,8 @@ Clone this repository anywhere outside Neovim's configuration directory, then
 link its `nvim/` directory into the active configuration location:
 
 ```bash
-git clone https://github.com/tom-jagus/nvim ~/src/nvim
-cd ~/src/nvim
+git clone https://github.com/tom-jagus/nvim-dotfiles.git ~/src/default/nvim-dotfiles
+cd ~/src/default/nvim-dotfiles
 ./install.sh
 ```
 
